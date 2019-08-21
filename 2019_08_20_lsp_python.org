@@ -1,0 +1,7 @@
+#+STARTUP: showeverything
+
+* Install necessary packages
+  Choose a venv of your choice and issue
+  sudo pip3 install 'python-language-server[all]'
+* Setup autopep8 to automatically correct pep8 violations
+  sudo pip3 install autopep8

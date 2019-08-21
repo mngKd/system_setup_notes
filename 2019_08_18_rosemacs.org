@@ -1,0 +1,19 @@
+#+STARTUP: showeverything
+
+* Rosemacs
+   Since we are using emacs >= 24, we can not install it via 'sudo apt install ros-kinetic-rosemacs'.
+   We have to clone it into a catkin_ws, compile it and install it by hand.
+
+** Build 
+   mkdir -p <WS>/src
+   cd <WS>/src
+   git clone https://github.com/code-iai/ros_emacs_utils.git
+   catkin_make
+
+** Install to /opt/ros/kinetic
+   sudo su
+   source /opt/ros/kinetic/setup.bash
+   catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic                                       
+
+** Add to emacs.el
+   See README.md in cloned git repo

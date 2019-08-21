@@ -1,0 +1,54 @@
+#+STARTUP: showeverything
+
+* Setup clang 7
+** Install clang 7
+*** Add clang repo key
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+*** Add apt repository
+    sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
+    sudo apt update
+*** Install clang
+    sudo apt install apt-get install clang-7 clang-tools-7 clang-7-doc libclang-common-7-dev libclang-7-dev libclang1-7 clang-format-7 python-clang-7
+*** Check clang version
+    /usr/bin/clang -v
+    /usr/bin/clang++ -v
+** Install gcc-7 to have stdlibc++ with <optional>
+   See also https://github.com/MaskRay/ccls/issues/287
+   Instructions taken from [[https://gist.github.com/DTasev/e5bfaa1e31ab9df7409a2d13933cbed9]]
+*** Add apt repository
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    sudo apt update
+*** Install gcc-7
+    sudo apt install gcc-7 g++-7
+*** Add gcc-7 as alternative
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 90 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+** Use clang as default compiler
+*** Configure clang as alternative for gcc
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/clang-7 90 --slave /usr/bin/g++ g++ /usr/bin/clang++-7
+*** Also configure current gcc version (5.4.0)
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 95 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+*** Choose which alternative to take
+    sudo update-alternatives --config gcc
+* Install newest cmake (3.15)
+** Add kitware repo key
+   wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+** Add repository
+   sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
+   sudo apt update
+** Install cmake
+   sudo apt install cmake
+* Build and install [[https://github.com/MaskRay/ccls/wiki/Build][ccls]]
+** Get copy
+   git clone --depth=1 --recursive https://github.com/MaskRay/ccls
+   cd ccls
+** Build
+   cmake -H. -BRelease -DCMAKE_BUILD_TYPE=Release \
+   -DCMAKE_PREFIX_PATH=/usr/lib/llvm-7 \
+   -DLLVM_INCLUDE_DIR=/usr/lib/llvm-7/include \
+   -DLLVM_BUILD_INCLUDE_DIR=/usr/include/llvm-7
+
+   cmake --build Release
+** Install
+   sudo make install
+   The binary can now be found under '/usr/local/bin/ccls'.
+* Configure emacs
